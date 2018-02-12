@@ -5,14 +5,16 @@ import Header from './Header.js';
 import Messages from './Messages.js';
 import NewMessage from './NewMessage.js';
 
-export default Home = () => (
+export default Home = ( props ) => (
   <KeyboardAvoidingView
     behavior = {'padding'}
     style = {styles.container}
   >
     <Header />
     <Messages />
-    <NewMessage />
+    <NewMessage
+      author = { props.navigation.state.params.author }
+    />
   </KeyboardAvoidingView>
 )
 

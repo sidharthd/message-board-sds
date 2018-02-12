@@ -27,7 +27,7 @@ export default class Login extends React.Component {
         const { result, author, error } = response.data;
         if ( result == 'success' ) {
           Keyboard.dismiss();
-          this.props.navigation.navigate( 'Home', { 'author': author } );
+          this.props.navigation.navigate( 'Home', { author: author } );
         }
         else if ( error == 'email' ) {
           alert( 'Email already exists. Please login.' );

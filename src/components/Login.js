@@ -27,7 +27,7 @@ export default class Login extends React.Component {
         const { result, author } = response.data;
         if ( result == 'success' ) {
           Keyboard.dismiss();
-          this.props.navigation.navigate( 'Home', { 'author': author } );
+          this.props.navigation.navigate( 'Home', { author: author } );
         }
         else {
           alert( 'Invalid login details.' );

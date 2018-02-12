@@ -6,7 +6,8 @@ export default class NewMessage extends React.Component {
 
   postMessage = () => {
     axios.post('http://mb-sds.herokuapp.com/api/1/post-message/', {
-      message: this.state.message
+      message: this.state.message,
+      author: this.props.author
     }).then( response => {
 
     })
