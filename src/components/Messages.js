@@ -29,7 +29,6 @@ export default class Messages extends React.Component {
     })
 
     socket.on('new message', (response) => {
-      console.log(response);
       this.setState({
         messages: [response, ...this.state.messages]
       })
