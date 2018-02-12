@@ -1,5 +1,14 @@
 {
-  "expo": {
-    "sdkVersion": "25.0.0"
-  }
-}
+   "expo": {
+    "name": "Messsage Board - SDS",
+    "version": "1.0.0",
+    "slug": "msg-board",
+    "sdkVersion": "25.0.0",
+    "ios": {
+      "bundleIdentifier": "com.sds.msgboard"
+    },
+    "android": {
+      "package": "com.sds.msgboard"
+    }
+   }
+ }

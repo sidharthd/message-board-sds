@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   message: {
     backgroundColor: 'darkblue',
     padding: 20,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   author: {
     fontSize: 20,
