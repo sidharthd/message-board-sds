@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import io from 'socket.io-client';
 
@@ -15,11 +15,20 @@ export default class Messages extends React.Component {
     ]
 
     this.state = {
-      messages: []
+      messages: [],
+      laodingMessages: true
     }
   }
 
   componentDidMount() {
+    axios.get('http://mb-sds.herokuapp.com/api/1/get-messages/')
+    .then( response => {
+      this.setState({
+        messages: response.data.messages,
+        laodingMessages: false
+      })
+    })
+
     const socket = io.connect(
       'https://mb-sds.herokuapp.com',
       {transports: ['websocket']}
@@ -31,13 +40,6 @@ export default class Messages extends React.Component {
     socket.on('new message', (response) => {
       this.setState({
         messages: [response, ...this.state.messages]
-      })
-    })
-
-    axios.get('http://mb-sds.herokuapp.com/api/1/get-messages/')
-    .then( response => {
-      this.setState({
-        messages: response.data.messages
       })
     })
   }
@@ -52,20 +54,49 @@ export default class Messages extends React.Component {
   }
 
   render() {
-    return(
-      <View style = {styles.container}>
-        <FlatList
-          data = {this.state.messages}
-          renderItem = {this.renderMessage}
-        />
-      </View>
-    );
+    if (this.state.loadingMessages) {
+      return(
+        <View style = {styles.container}>
+          <ActivityIndicator size = { 'large' } />
+        </View>
+      );
+    }
+    else {
+      return(
+        <View style = {styles.container}>
+          {
+            this.state.messages.length == 0 ?
+              <View style = {styles.noMessages}>
+                <Text style = {styles.noMessagesText}>
+                  No messages to show.
+                </Text>
+              </View>
+
+            :
+
+              <FlatList
+                data = {this.state.messages}
+                renderItem = {this.renderMessage}
+              />
+          }
+
+        </View>
+      );
+    }
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: 20,
+  },
+  noMessages: {
+    alignItems: 'center'
+  },
+  noMessagesText: {
+    color: 'grey',
+    fontSize: 16,
   },
 })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, Text, Image, Button, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
+import { View, TextInput, Text, Image, Button, StyleSheet, TouchableOpacity, Keyboard, ActivityIndicator } from 'react-native';
 
 import axios from 'axios';
 
@@ -9,11 +9,13 @@ export default class Login extends React.Component {
     super();
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      submitting: false
     }
   }
 
   login = () => {
+
     // Get email and password from state
     const { email, password } = this.state;
 
@@ -21,6 +23,9 @@ export default class Login extends React.Component {
       alert( 'Please fill out both fields.' )
     }
     else {
+      this.setState({
+        submitting: true,
+      })
       axios.post('https://mb-sds.herokuapp.com/api/1/login/', {
         email, password
       }).then( response => {
@@ -32,6 +37,7 @@ export default class Login extends React.Component {
         else {
           alert( 'Invalid login details.' );
         }
+        this.setState({ submitting: false })
       })
     }
   }
@@ -64,14 +70,25 @@ export default class Login extends React.Component {
             secureTextEntry = { true }
             onChangeText = { ( password ) => { this.setState({ password }) } }
           />
-          <TouchableOpacity
-            style = { styles.loginButton }
-            onPress = { this.login }
-          >
-            <Text style = { styles.loginButtonText }>
-              Login
-            </Text>
-          </TouchableOpacity>
+
+          {
+            this.state.submitting
+            ?
+              <ActivityIndicator
+                style = { styles.spinner }
+                color = { 'rgba(255, 255, 255, 0.2)' }
+                size = { 'large' }
+              />
+            :
+              <TouchableOpacity
+                style = { styles.loginButton }
+                onPress = { this.login }
+              >
+                <Text style = { styles.loginButtonText }>
+                  Login
+                </Text>
+              </TouchableOpacity>
+          }
 
           <TouchableOpacity
             style = { styles.newAccount }
@@ -90,7 +107,7 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 40,
-    paddingTop: 60,
+    paddingTop: 30,
     alignItems: 'center',
     backgroundColor: 'rgb(0, 128, 128)',
     flex: 1,
@@ -132,5 +149,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  spinner: {
+    marginVertical: 18,
   }
 })

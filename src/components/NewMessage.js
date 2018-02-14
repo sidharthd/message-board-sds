@@ -1,15 +1,30 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, Button } from 'react-native';
+import { View, TextInput, StyleSheet, Button, ActivityIndicator, Keyboard } from 'react-native';
 import axios from 'axios';
 
 export default class NewMessage extends React.Component {
 
+  constructor() {
+    super();
+    this.state = {
+      message: '',
+      submitting: false,
+    }
+  }
+
   postMessage = () => {
+    Keyboard.dismiss();
+    this.setState({
+      submitting: true
+    })
     axios.post('http://mb-sds.herokuapp.com/api/1/post-message/', {
       message: this.state.message,
       author: this.props.author
     }).then( response => {
-
+      this.setState({
+        message: '',
+        submitting: false
+      })
     })
   }
 
@@ -17,6 +32,7 @@ export default class NewMessage extends React.Component {
     return(
       <View style = {styles.container}>
         <TextInput
+          value = {this.state.message}
           style = {styles.input}
           placeholder = {'Type your message here'}
           underlineColorAndroid = {'transparent'}
@@ -26,10 +42,16 @@ export default class NewMessage extends React.Component {
             })
           }}
         />
-        <Button
-          title = {'Send'}
-          onPress = { this.postMessage }
-        />
+
+        {
+          this.state.submitting ?
+            <ActivityIndicator />
+          :
+          <Button
+            title = {'Send'}
+            onPress = { this.postMessage }
+          />
+        }
       </View>
     );
   }
@@ -42,6 +64,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 18,
-    padding: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   }
 })
